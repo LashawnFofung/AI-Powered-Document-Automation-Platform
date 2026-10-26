@@ -1,165 +1,174 @@
-# 🤖 AI-Powered-Document-Automation-Platform (MVP)
+<div align="center">
 
-## Production-Grade Retrieval-Augmented Generation (RAG) & Document Governance
+# 🤖 AI-Powered Document Automation Platform (MVP)
+### Turning messy, multi-document PDFs into answers you can verify
 
-This repository showcases the complete AI-Powered Document Automation Platform developed during the Outamation Advanced AI-Powered Document Insights and Data Extraction Externship. The platform is designed to help businesses improve, automate, and architect critical tasks like document handling and data management, leading to thousands of hours saved and significantly boosted accuracy. This platform is a high-performance solution designed for complex, high-volume document environments such as Real Estate, Healtcare, Legal, Finance, and HR. Unlike generic RAG systems that often suffer from "Context Contamination," this system uses **Intelligent Boundary Detection** and **Metadata-Rich Chunking** to isolate and retrieve precise document segments with surgical accuracy.
+**🏆 Top Performer Award (Top 10%)** · Outamation AI-Powered Document Insights & Data Extraction Externship · Oct 2025 – Jan 2026
 
-<br>
+[![Live POC](https://img.shields.io/badge/Live_POC-Hugging_Face-FFD21E?style=flat&logo=huggingface&logoColor=black)](https://huggingface.co/spaces/lfofung/AI-Powered-Document-Intelligence-Automation-Platform)
+[![Demo Videos](https://img.shields.io/badge/Demo_Videos-Watch-FF0000?style=flat&logo=youtube&logoColor=white)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/DEMO/DEMO.md)
+[![Notebook](https://img.shields.io/badge/MVP_Notebook-Colab-F9AB00?style=flat&logo=googlecolab&logoColor=white)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/src/AI_Powered_Document_Intelligence_Automation_Platform_MVP.ipynb)
+[![AI Portfolio](https://img.shields.io/badge/AI_Portfolio-View-6E40C9?style=flat&logo=github&logoColor=white)](https://github.com/LashawnFofung/AI-Portfolio)
 
-------------- 
-### 🛠️ MVP Objectives
+[![Platform screenshot](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/raw/main/DEMO/DEMO%20AI-Powered%20Document%20Automation%20Platform.png)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/DEMO/DEMO.md)
 
-- **Contextual Fidelity:** Eliminates hallucinations by segregating the vector space based on document classification.
-- **Intelligent Automation:** Automatically splits bulk "blob" PDFs (e.g., a 50-page file containing multiple distinct contracts) into logical units.
-- **Hardware-Aware Versatility:** Dynamic toggling between Gemini 2.0 (API), Mistral 7B, and Phi-2 (Local) with automated VRAM "Deep Purges" to - maintain stability on T4 GPUs.
-- **Audit-Ready Compliance:** Every response undergoes a Quality Audit Gate (measuring Faithfulness, Relevance, and Context Density) before being displayed.
+</div>
 
-<br>
+---
 
--------------
-### 🏗️ Technical Architecture
+## Contents
+[TL;DR](#tldr) · [The Problem](#the-problem) · [The Product](#the-product) · [Key Product Decisions](#key-product-decisions) · [Architecture](#architecture) · [Demos](#demos) · [Evaluation](#evaluation--evidence) · [Delivery: 9 Sprints](#delivery-9-sprints) · [Tech Stack](#tech-stack) · [My Role](#my-role)
 
-The system follows a modular Six-Stage Execution Cycle:
-- **Ingestion Layer:** Hybrid OCR (PyMuPDF + Tesseract) extracts text and images while preserving spatial metadata.
-- **Intelligence Layer:** LLM-based classification into a custom taxonomy (e.g., Invoices, Land Deeds, Pay Slips) and automated page boundary detection.
-- **Storage Layer:** LlamaIndex + FAISS create Segregated Silos using metadata filters to prevent data leakage between different document types.
-- **Orchestration Layer:** A Python-generator-based "Thinking Loop" manages asynchronous status updates and hardware state safety.
-- **Audit Layer:** Automated calculation of the RAG Triad metrics and real-time performance tracking.
-- **Presentation Layer:** An Obsidian-themed Gradio UI featuring real-time PDF previews and exportable PDF audit reports.
+---
 
-<br> 
+## TL;DR
 
--------------
-### 🔄 End-to-End Workflow
+| | |
+|---|---|
+| **Users** | Loan officers and operations teams who process high-volume documents (mortgage, finance, legal, HR) |
+| **Problem** | Bulk-scanned PDFs mix many document types. Standard RAG blends them together and returns answers from the wrong document. |
+| **Solution** | Detects where each document begins and ends, classifies it, stores each type in its own search "silo," and answers with page-level citations. |
+| **Proof** | Quality audit on every answer (Faithfulness, Relevance, Context Density), PDF audit export, and 3 swappable LLMs |
+| **Outcome** | Working MVP + live POC · 🏆 Top Performer Award (Top 10%) |
 
- The platform manages the complete document lifecycle through a specialized four-stage pipeline:
+---
 
-  * **1. Document Discovery & Classification (S2, S7)**
-    * Automatically ingests unstructured PDF "blobs" (bulk uploads).
-    * Cleans, applies OCR,and segments files into logical categories (Pay Stubs, IDs, Contracts) using intelligent boundary detection to ensure zero data leakage.
+## The Problem
 
-* **2. Heuristic Data Extraction (S3, S4)**
-    * Employs specialized Python heuristics and layout-aware OCR engines.
-    * Transforms raw text into structured JSON/DataFrames, capturing critical fields like loan amounts and names with high precision.
+Companies process thousands of unstructured documents every day, such as loan applications, pay slips, contracts, and fee sheets. They're often scanned together into one large PDF "blob." That creates three problems:
 
-* **3. Semantic Context Retrieval (S5, S6)**
-    * Powered by a fine-tuned RAG pipeline utilizing LlamaIndex.
-    * Enables deep-context querying, allowing users to ask complex questions across the entire repository without manual searching.
+1. **Context contamination.** Generic RAG treats the blob as one stream of text, so a question about a pay slip can pull numbers from a contract.
+2. **Manual prep work.** Someone has to split and label files before any tool can use them.
+3. **No trust trail.** In finance and legal work, an answer without a source can't be used. Teams need to see *where* every number came from.
 
-* **4. Human-in-the-Loop Interface (S8)**
-    * A production-ready Gradio web interface providing a familiar, chat-based UX.
-    * Features real-time source citations and document previews for instant verification of AI responses.
+---
 
-<br>
+## The Product
 
--------------
-### 🌟 Core Capabilities
+A three-tab Gradio app built for the person who has to act on the answer:
 
-- **Multi-Modal Routing:** Automatically detects if a query relates to "Financial Amounts" vs. "Legal Terms" and targets the specific document silo.
-- **VRAM Management:** Implements "Safety Gate" logic (deep_purge_gpu) to allow seamless switching between heavy local models and API-based models without system crashes.
-- **Source Attribution:** Every AI response includes clickable citations (e.g., "Source: Invoice (p. 4)") to ensure human-in-the-loop verification.
-- **Exportable Audits:** Generate professional PDF summaries of chat history and performance metrics for compliance records.
+| Tab | What the user does |
+|---|---|
+| **💬 Chat Operations** | Upload a PDF, pick a model (Gemini 2.0 Flash, Mistral 7B, or Phi-2), ask questions, or use one-click prompts like **Summarize** and **Find Amounts**. Every answer cites its source (e.g., *Invoice, p. 4*). Export the session as a PDF audit trail. |
+| **⚙️ Configuration & Filters** | View the document structure as JSON, adjust chunk size and overlap, and filter retrieval to a single document type (e.g., only *Lender Fee Sheets*). |
+| **📊 Performance Audit** | Review Faithfulness, Relevance, Context Density, and latency for each query to see why an answer did or didn't perform well. |
 
-<br>
+---
 
--------------
-### 🛠️ Tools & Technologies
+## Key Product Decisions
 
-- **Frameworks:** LlamaIndex (Orchestration), Gradio (UI), FAISS (Vector DB).
-- **OCR Engines:** Tesseract, PyMuPDF.
-- **Models:** Gemini 2.0 Flash, Mistral 7B, Phi-2.
-- **Environment:** Google Colab, Python 3.x.
+| Decision | Why | Trade-off |
+|---|---|---|
+| **Silo the vector store by document type** | Stops answers from mixing documents, which is the #1 failure in mixed-document RAG | Requires an accurate classification step up front |
+| **Hybrid extraction: LLM + deterministic regex** | Financial figures must be exact. The LLM interprets *what* a fee is; regex captures the exact number. | More logic to maintain than pure-LLM extraction |
+| **Page-level citations on every answer** | A human must be able to verify before acting (human-in-the-loop) | Ingestion must preserve page and layout metadata |
+| **Three swappable models (API + local)** | Gives a choice of reasoning quality, speed, cost, and data-privacy needs | Local models need careful GPU memory management (built a "deep purge" safety gate for T4 GPUs) |
+| **Model-aware retrieval** | Smaller models need more help: Phi-2 retrieves 8 chunks instead of 5 | Larger prompts and slightly higher latency |
+| **Audit gate + PDF export** | Regulated teams need a paper trail, not a black box | Adds processing time to each response |
 
-<br>
+---
 
--------------
+## Architecture
 
-<h1>ABOUT EXTERNSHIP</h1>
+```mermaid
+flowchart LR
+    A[📄 PDF blob upload] --> B[Ingestion<br/>PyMuPDF + Tesseract OCR]
+    B --> C[Intelligence<br/>Boundary detection +<br/>LLM classification]
+    C --> D[(Storage<br/>LlamaIndex + FAISS<br/>siloed by doc type)]
+    D --> E[Orchestration<br/>Intent routing +<br/>metadata filters]
+    E --> F{LLM<br/>Gemini · Mistral · Phi-2}
+    F --> G[Audit<br/>Faithfulness · Relevance ·<br/>Context Density]
+    G --> H[🖥️ Gradio UI<br/>Cited answers + PDF export]
+```
 
-## The Business Challenge
-Every day, companies handle thousands of complex, unstructured documents (e.g., loan applications, contracts). Extracting information quickly and accurately is a major challenge, as documents vary in format, often contain missing data, or require specialized layout-aware processing.
+| Layer | What it does |
+|---|---|
+| **Ingestion** | Hybrid OCR extracts text and images while preserving page layout metadata |
+| **Intelligence** | Classifies pages into a business taxonomy (Invoices, Land Deeds, Pay Slips…) and detects document boundaries |
+| **Storage** | Separate, metadata-filtered silos so document types never leak into each other |
+| **Orchestration** | A generator-based loop that streams status updates and manages GPU state safely |
+| **Audit** | Scores each answer on the RAG Triad and tracks performance |
+| **Presentation** | Gradio UI with live PDF preview, citations, and exportable audit reports |
 
-This project delivers an end-to-end, modular system that addresses these challenges by applying advanced AI, OCR, and Retrieval-Augmented Generation (RAG) techniques to mortgage documents.
+---
 
-<h1></h1>
+## Demos
 
-## Project Overview (Modules)
-The platform was built through a sequence of nine intensive sprints, progressing from foundational data preparation to final system integration and user interface development.
+| Demo | What it shows | Video |
+|---|---|---|
+| UI Walkthrough | All three tabs and the overall design | [▶️ Watch](https://youtu.be/T4zju8HCFMM) |
+| Gemini: Ingestion & One-Click Prompts | Boundary detection, document viewer, Summarize and Find Amounts | [▶️ Watch](https://youtu.be/FG8nZZfnJ78) |
+| Export Chat History as PDF | Audit trail with model, citations, and timestamps | [▶️ Watch](https://youtu.be/JwXRt7PwbmE) |
+| Switch to Mistral | Model swap + ingestion + prompts | [▶️ Watch](https://youtu.be/_qzGlJbhN5U) |
+| Switch to Phi-2 (local) | Lightweight local model on a T4 GPU with VRAM safety gate | [▶️ Watch](https://youtu.be/KewimB_I_k8) |
+| RAG Config, JSON & Doc-Type Filter | Siloed retrieval and metadata transparency | [▶️ Watch](https://youtu.be/rNTbHpflirk) |
 
-<h1></h1>
+📖 Full write-ups: [DEMO.md](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/DEMO/DEMO.md) · 🌐 [Try the live POC](https://huggingface.co/spaces/lfofung/AI-Powered-Document-Intelligence-Automation-Platform)
 
-## Learning Python
+---
 
-I am currently upskilling my software engineering and product management skills by applying focused Python labs to real-world AI challenges. My journey to build the AI-Powered Document Automation Platform has been a comprehensive deep dive into three critical areas:
+## Evaluation & Evidence
 
-- <b>Data Extraction & Preparation:</b> I began by building robust pipelines for document data ingestion. This involved mastering tools like PyMuPDF to parse and transform raw, messy PDF structures into clean, standardized data—the essential first step for any reliable AI application.
+Model choices were benchmarked, not guessed:
 
-- <b>RAG System Foundation:</b> I rapidly acquired knowledge of the Retrieval-Augmented Generation (RAG) system architecture, implementing the core components (LlamaIndex, Vector Indexing, LLMs) to create a functional knowledge base that powers semantic search.
+- **[Embedding Model Scorecard](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Embedding%20Model%20Scorecard%20Analysis.pdf)** — MiniLM-L6-v2 vs. BGE-small-en vs. E5-small-v2 on indexing speed, retrieval speed, and retrieval quality.
+- **[Comparative Analysis of LLMs for RAG](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Comparative%20Analysis%20of%20Large%20Language%20Models%20%20for%20Retrieval-Augmented%20Generation%20%28RAG%29.pdf)** — LLM and embedding combinations tested for sub-second retrieval with factual accuracy.
+- **OCR engine comparison (Sprint 4)** — Tesseract vs. PaddleOCR vs. EasyOCR for layout-aware extraction from scanned documents.
+- **Built-in quality audit** — every live answer is scored on Faithfulness, Relevance, and Context Density.
 
-- <b>Optimizing RAG Pipelines:</b> Finally, I focused on high-performance optimization, fine-tuning my pipeline's efficiency by selecting fast models like Gemini 2.5 Flash, implementing advanced chunking strategies, and deploying a memory-aware, conversational interface.
-<br><br>
+---
 
-This practical experience has solidified my ability to move beyond theoretical concepts and architect, build, and deploy production-ready AI solutions for document intelligence.
+## Delivery: 9 Sprints
 
-- <b>View Repo:</b>
-  - [Python Document Preparation & Extraction](https://github.com/LashawnFofung/Python-Document-Preparation-and-Extraction)
-  - [RAG Pipelines](https://github.com/LashawnFofung/RAG-Pipelines)
-    - AI-Powered Document Automation Platform: A RAG Journey 🚀
-    - This repository documents my technical evolution from writing basic LLM prompts to engineering a production-ready Retrieval-Augmented Generation (RAG) Proof of Concept (PoC). Each folder and notebook represents a critical milestone in mastering LlamaIndex, open-source model deployment, and intelligent document orchestration.  
+Built across nine sprints, with a written status update for each.
 
-<h1></h1>
+| Sprint | Focus | Artifacts |
+|---|---|---|
+| **S1** | Problem framing & core objectives | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%201%20AI-Powered%20Document%20Automation%20Platform.pdf) |
+| **S2** | Data prep: cleaning, standardization, and image processing for mortgage documents | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%202%20AI-Powered%20Document%20Automation%20Platform-2.pdf) |
+| **S3** | Field extraction from digital and scanned PDFs (PyMuPDF, pdfplumber, regex, anchor phrases) | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%203%20AI-Powered%20Document%20Automation%20Platform.pdf) |
+| **S4** | OCR evaluation: Tesseract vs. PaddleOCR vs. EasyOCR | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%204%20AI-Powered%20Document%20Automation%20Platform.pdf) |
+| **S5** | First RAG pipeline with LlamaIndex | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%205%20AI-Powered%20Document%20Automation%20Platform.pdf) |
+| **S6** | RAG optimization: chunking, metadata filtering, open-source LLMs (Mistral, Phi-2) | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%206%20AI-Powered%20Document%20Automation%20Platform.pdf) · [Embedding Report](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Embedding%20Model%20Scorecard%20Analysis.pdf) · [LLM Report](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Comparative%20Analysis%20of%20Large%20Language%20Models%20%20for%20Retrieval-Augmented%20Generation%20%28RAG%29.pdf) |
+| **S7** | Blob processing: automatic splitting, classification, and routing | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%207%20AI-Powered%20Document%20Automation%20Platform.pdf) |
+| **S8** | Interactive Gradio chatbot + proof of concept | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%208%20AI-Powered%20Document%20Automation%20Platform.pdf) · [Chatbot Notebook](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Gradio/Task_Full_RAG_Pipeline_with_Interactive_Gradio_Chatbot.ipynb) · [Chatbot Deck](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Presentation/Full%20RAG%20Pipeline%20with%20Interactive%20Gradio%20Chatbot%20-%20Demo%20and%20Reflection.pdf) · [POC Notebook](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/POC/Task_Enhanced_Document_Q%26A_System_with_Intelligent_RAG_Pipeline.ipynb) · [POC Deck](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Presentation/AI-Powered%20Document%20Intelligence%20Automation%20Platform%20with%20Gradio%20Chatbot%20-%20Demo%20and%20Reflection.pdf) · [Live POC](https://huggingface.co/spaces/lfofung/AI-Powered-Document-Intelligence-Automation-Platform) |
+| **S9** | Final integration, testing, and MVP | [Status](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%209%20%20AI-Powered%20Document%20Automation%20Platform.pdf) · [MVP Notebook](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/src/AI_Powered_Document_Intelligence_Automation_Platform_MVP.ipynb) · [Demos](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/DEMO/DEMO.md) |
 
-## Module	Title	Core Focus / Outcome
+---
 
-### 🟩 Sprint 1 (S1)
-  - <b>AI Document Intelligence:</b> Setting the stage and Core Objectives
+## Tech Stack
 
-  - <i>Status Update:</i> [Sprint 1 (S1)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%201%20AI-Powered%20Document%20Automation%20Platform.pdf)
+**Orchestration & retrieval:** LlamaIndex · FAISS · metadata filtering · intent routing
+**Models:** Gemini 2.0 Flash (API) · Mistral 7B (local) · Phi-2 (local)
+**Document processing:** PyMuPDF · Tesseract OCR · pdfplumber · regex extraction
+**Interface:** Gradio (custom theme, live PDF preview, PDF export)
+**Environment:** Python 3 · Google Colab (T4 GPU) · Hugging Face Spaces
 
-### 🟩 Sprint 2 (S2)
-  - <b>Python & Google Colab:</b> Preparing Mortgage Data for AI	Data cleaning, standardization, and image processing to ensure clean input for AI models.
+---
 
-  - <i>Status Update:</i> [Sprint 2(S2)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%202%20AI-Powered%20Document%20Automation%20Platform-2.pdf)
+## My Role
 
-### 🟩 Sprint 3 (S3)
-  - Python Data Extraction from PDFs using Python	Using Python tools (PyMuPDF, pdfplumber) and heuristics (regex, anchor phrases) to extract key fields from digital and scanned PDFs.
+I built this platform end to end during the externship, working as both product owner and builder:
 
-  - <i>Status Update:</i> [Sprint 3(S3)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%203%20AI-Powered%20Document%20Automation%20Platform.pdf)
+- **Scoped the MVP** around one core user risk: answers pulled from the wrong document.
+- **Ran the evaluations** (OCR engines, embedding models, LLMs) and used the results to choose the stack.
+- **Built the pipeline and UI** — ingestion, classification, siloed retrieval, audit metrics, and the Gradio app.
+- **Reported progress each sprint** with written status updates for stakeholders.
+- **Delivered** a working MVP, a live POC, six demo videos, and two technical evaluation reports.
 
-### 🟩 Sprint 4 (S4)
-  - <b>Optimizing OCR:</b> Comparing Tesseract, PaddleOCR, and EasyOCR	Evaluating and selecting the optimal OCR engine, focusing on layout-aware extraction for complex scanned documents.
-  - <i>Status Update:</i> [Sprint 4(S4)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%204%20AI-Powered%20Document%20Automation%20Platform.pdf)
+---
 
-### 🟩 Sprint 5 (S5)
-  - <b>Implementing RAG:</b> Introduction to Retrieval-Augmented Generation (RAG).	Building a Retrieval-Augmented Generation (RAG) pipeline using LlamaIndex to enable AI to retrieve contextually relevant data.
-  - <i>Status Update:</i> [Sprint 5(S5)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%205%20AI-Powered%20Document%20Automation%20Platform.pdf)
+## Related Repos
 
-### 🟩 Sprint 6 (S6)
-  - <b>Optimizing RAG Pipelines:</b> Tuning, Chunking, and Metadata Filtering	Optimizing RAG through advanced chunking, metadata filtering, and experimentation with open-source LLMs (Mistral, Phi-2).
-  - <i>Technical Evaluation Report:</i> [Embedding Model Scorecard Analysis](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Embedding%20Model%20Scorecard%20Analysis.pdf)
-  - <i>Technical Evaluation Report:</i> [Comparative Analysis of Large Language Models for Retrieval-Augumented Generation (RAG)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Technical%20Evaluation%20Reports/Comparative%20Analysis%20of%20Large%20Language%20Models%20%20for%20Retrieval-Augmented%20Generation%20(RAG).pdf)
-  - <i>Status Update:</i> [Sprint 6(S6)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%206%20AI-Powered%20Document%20Automation%20Platform.pdf)
+- [Python Document Preparation & Extraction](https://github.com/LashawnFofung/Python-Document-Preparation-and-Extraction) — the data-prep and extraction groundwork
+- [RAG Pipelines](https://github.com/LashawnFofung/RAG-Pipelines) — step-by-step builds from a basic chatbot to the production-style POC
+- [🏆 Award](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/tree/main/Awards) · [AI Portfolio](https://github.com/LashawnFofung/AI-Portfolio) · [MBA Portfolio](https://github.com/LashawnFofung/MBA-IT-Management-Portfolio)
 
-### 🟩 Sprint 7 (S7)
-  - <b>Blob Processing and Classification:</b> Unlocking Unstructured Data. Designing a modular system to automatically split, classify, and route documents from massive, unstructured "blobs" (e.g., pay slips, contracts).
-  - <i>Status Update:</i> [Sprint 7(S7)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%207%20AI-Powered%20Document%20Automation%20Platform.pdf)
+<div align="center">
 
-### 🟩 Sprint 8 (S8)
-  - <b>Interactive Chatbot:</b> Building an Interactive Chatbot with Gradio and RAG	Integrating the RAG pipeline into a user-friendly, web-based Q&A interface using Gradio for seamless user interaction.
-  - <i>Status Update:</i> [Sprint 8(S8)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%208%20AI-Powered%20Document%20Automation%20Platform.pdf)
-  - <i>view:</i> [Colab Notebook: Full RAG Pipeline with Interactive Gradio Chatbot](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Gradio/Task_Full_RAG_Pipeline_with_Interactive_Gradio_Chatbot.ipynb)
-   - <i>view:</i> [Presentation PDF: Full RAG Pipeline with Interactive Gradio Chatbot](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Presentation/Full%20RAG%20Pipeline%20with%20Interactive%20Gradio%20Chatbot%20-%20Demo%20and%20Reflection.pdf)
-   - <i>view:</i> [Proof of Concept (POC) Colab Notebook: AI-Powered Document Intelligence Automation Platform with Gradio Chatbot](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/POC/Task_Enhanced_Document_Q%26A_System_with_Intelligent_RAG_Pipeline.ipynb)
-   - <i>view:</i> [Proof of Concept (POC) Presentation PDF: AI-Powered Document Intelligence Automation Platform with Gradio Chatbot](https://github.com/LashawnFofung/RAG-Pipelines/blob/main/Presentation/AI-Powered%20Document%20Intelligence%20Automation%20Platform%20with%20Gradio%20Chatbot%20-%20Demo%20and%20Reflection.pdf)
-   - <i>View Web-based POC:</i> [Live POC](https://huggingface.co/spaces/lfofung/AI-Powered-Document-Intelligence-Automation-Platform)
+**Lashawn Fofung** · Technical Product Manager · [LinkedIn](https://www.linkedin.com/in/lashawnfofung/)
 
-### 🟩 Sprint 9 (S9)
-  - <b>AI-Powered Document Automation Platform:</b> Final Integration. Building the End-to-End AI System	Assembling all components into a complete, rigorously tested, and evaluated platform ready for demonstration and deployment.
-  - <i>Status Update:</i> [Sprint 9(S9)](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/Status%20Updates/Status%20Update%20Sprint%209%20%20AI-Powered%20Document%20Automation%20Platform.pdf)
-  - <i>view:</i> [Colab Notebook: AI-Powered Document Auotmation Platform](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/src/AI_Powered_Document_Intelligence_Automation_Platform_MVP.ipynb)
-  - <b>Review DEMO:</b> [MVP Demos](https://github.com/LashawnFofung/AI-Powered-Document-Automation-Platform/blob/main/DEMO/DEMO.md)
-
-<h1></h1>
+</div>
 
 
 
