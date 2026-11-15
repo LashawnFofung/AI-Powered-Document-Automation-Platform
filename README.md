@@ -160,7 +160,9 @@ I built this platform end to end during the externship, working as both product 
 
 ## Maintenance
 
-**Nov 2026:** The live demo broke when Google retired Gemini 2.0. While fixing it, end-to-end testing showed that question routing was predicted but never applied to retrieval. A paystub question cited pages 1, 2, 53 and 54 instead of 37 to 40. I migrated the demo to Gemini 3.6 Flash, pinned dependencies, and wired routing into retrieval with one shared document-type list. The same question now returns the correct figure from pages 37 to 40. Full details are in the [changelog](CHANGELOG.md).
+**Nov 2026, routine upkeep:** I hadn't checked on the hosted demo in a while, and it had stopped answering because Google retired Gemini 2.0. After migrating it, my end-to-end re-test showed that question routing was predicted but never applied to retrieval: a paystub question cited pages 1, 2, 53 and 54 instead of 37 to 40. I moved the demo to Gemini 3.6 Flash, pinned dependencies, and wired routing into retrieval with one shared document-type list. The same question now returns the correct figure from pages 37 to 40.
+
+📝 [Write-up on Substack](https://lashawnfofung.substack.com/p/routine-upkeep-found-a-silent-bug) · ▶️ [Video recap](https://youtu.be/kluBpViNKEE) · 📄 [Changelog](CHANGELOG.md)
 
 ## Related Repos
 
