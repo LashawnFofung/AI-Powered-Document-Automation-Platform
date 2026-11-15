@@ -17,7 +17,7 @@
 ---
 
 ## Contents
-[TL;DR](#tldr) · [The Problem](#the-problem) · [The Product](#the-product) · [Key Product Decisions](#key-product-decisions) · [Architecture](#architecture) · [Demos](#demos) · [Evaluation](#evaluation--evidence) · [Delivery: 9 Sprints](#delivery-9-sprints) · [Tech Stack](#tech-stack) · [My Role](#my-role)
+[TL;DR](#tldr) · [The Problem](#the-problem) · [The Product](#the-product) · [Key Product Decisions](#key-product-decisions) · [Architecture](#architecture) · [Demos](#demos) · [Evaluation](#evaluation--evidence) · [Delivery: 9 Sprints](#delivery-9-sprints) · [Tech Stack](#tech-stack) · [My Role](#my-role) · [Maintenance](#maintenance)
 
 ---
 
@@ -139,7 +139,7 @@ Built across nine sprints, with a written status update for each.
 ## Tech Stack
 
 **Orchestration & retrieval:** LlamaIndex · FAISS · metadata filtering · intent routing
-**Models:** Gemini 2.0 Flash (API) · Mistral 7B (local) · Phi-2 (local)
+**Models:** Gemini 2.0 Flash (API) · Mistral 7B (local) · Phi-2 (local) · *Live POC now runs Gemini 3.6 Flash ([changelog](CHANGELOG.md))*
 **Document processing:** PyMuPDF · Tesseract OCR · pdfplumber · regex extraction
 **Interface:** Gradio (custom theme, live PDF preview, PDF export)
 **Environment:** Python 3 · Google Colab (T4 GPU) · Hugging Face Spaces
@@ -157,6 +157,10 @@ I built this platform end to end during the externship, working as both product 
 - **Delivered** a working MVP, a live POC, six demo videos, and two technical evaluation reports.
 
 ---
+
+## Maintenance
+
+**Nov 2026:** The live demo broke when Google retired Gemini 2.0. While fixing it, end-to-end testing showed that question routing was predicted but never applied to retrieval. A paystub question cited pages 1, 2, 53 and 54 instead of 37 to 40. I migrated the demo to Gemini 3.6 Flash, pinned dependencies, and wired routing into retrieval with one shared document-type list. The same question now returns the correct figure from pages 37 to 40. Full details are in the [changelog](CHANGELOG.md).
 
 ## Related Repos
 
